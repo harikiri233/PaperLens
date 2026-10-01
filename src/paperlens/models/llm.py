@@ -7,6 +7,7 @@
 
 import json
 import time
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any, TypeVar
 
@@ -145,6 +146,44 @@ class LLMClient:
             latency_s=latency,
             finish_reason=choice.finish_reason,
         )
+
+    def stream(
+        self,
+        messages: list[Message],
+        *,
+        max_tokens: int | None = None,
+        temperature: float | None = None,
+    ) -> Iterator[str]:
+        """流式对话（关闭思考模式），逐段返回文本；结束时把用量记入 tracker。"""
+        kwargs: dict[str, Any] = {
+            "model": self.model,
+            "messages": messages,
+            "stream": True,
+            "stream_options": {"include_usage": True},
+        }
+        if max_tokens is not None:
+            kwargs["max_tokens"] = max_tokens
+        if temperature is not None:
+            kwargs["temperature"] = temperature
+        if self.settings.llm_send_thinking_param:
+            kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
+
+        usage = None
+        for chunk in self._client.chat.completions.create(**kwargs):
+            if getattr(chunk, "usage", None):
+                usage = chunk.usage
+            if chunk.choices:
+                delta = chunk.choices[0].delta
+                text = getattr(delta, "content", None)
+                if text:
+                    yield text
+        if usage is not None:
+            self.tracker.record(
+                self.model,
+                input_tokens=getattr(usage, "prompt_tokens", 0) or 0,
+                output_tokens=getattr(usage, "completion_tokens", 0) or 0,
+                cached_input_tokens=_cached_tokens(usage),
+            )
 
     def complete_json(
         self,

@@ -1,0 +1,16 @@
+# 种子论文：RAG / Agent 方向经典论文，每行一个 arXiv ID，# 后为注释
+2005.11401  # RAG (Lewis et al.)
+2310.11511  # Self-RAG
+2401.15884  # CRAG: Corrective Retrieval Augmented Generation
+2404.16130  # GraphRAG: From Local to Global
+2212.10496  # HyDE: Precise Zero-Shot Dense Retrieval without Relevance Labels
+2309.15217  # RAGAS
+2312.10997  # Retrieval-Augmented Generation for Large Language Models: A Survey
+2210.03629  # ReAct
+2303.11366  # Reflexion
+2302.04761  # Toolformer
+2305.14283  # Query Rewriting for Retrieval-Augmented LLMs
+2307.03172  # Lost in the Middle
+2004.04906  # DPR: Dense Passage Retrieval
+2402.03216  # BGE M3-Embedding
+1706.03762  # Attention Is All You Need
