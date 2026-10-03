@@ -4,7 +4,9 @@
 """
 
 import json
+import re
 import sqlite3
+import threading
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
@@ -50,13 +52,15 @@ class Database:
         self._conn.row_factory = sqlite3.Row
         self._conn.execute("PRAGMA foreign_keys = ON")
         self._conn.executescript(_SCHEMA)
+        self._lock = threading.RLock()
 
     def close(self) -> None:
         self._conn.close()
 
     @contextmanager
     def _tx(self):
-        with self._conn:
+        # Web 服务里问答、入库、生成卡片在不同线程共用这个连接，写事务串行执行
+        with self._lock, self._conn:
             yield self._conn
 
     # ---- papers ----
@@ -120,7 +124,8 @@ class Database:
     def find_papers(self, mention: str, *, limit: int = 3) -> list[PaperRecord]:
         """按标题模糊匹配论文，用于把问题里点名的论文（如 "Self-RAG"）解析成 ID。
 
-        先精确匹配 ID，再匹配标题冒号前的系统名，最后做子串匹配；忽略大小写和连字符。
+        先精确匹配 ID，再匹配标题冒号前的系统名或首字母缩写（"Corrective Retrieval Augmented
+        Generation" → CRAG），最后做子串匹配；忽略大小写和连字符。
         """
         mention = mention.strip()
         if not mention:
@@ -138,7 +143,7 @@ class Database:
             full = _normalize(title)
             if key == short:
                 scored.append((0, record))
-            elif short.startswith(key) or key in short:
+            elif short.startswith(key) or key in short or key == _acronym(title):
                 scored.append((1, record))
             elif key in full:
                 scored.append((2, record))
@@ -168,6 +173,12 @@ class Database:
                     datetime.now(UTC).isoformat(timespec="seconds"),
                 ),
             )
+
+
+def _acronym(title: str) -> str:
+    """标题冒号前部分中大写开头单词的首字母，小写返回。"""
+    words = re.split(r"[\s\-]+", title.split(":", 1)[0])
+    return "".join(w[0] for w in words if w[:1].isupper()).lower()
 
 
 def _normalize(text: str) -> str:

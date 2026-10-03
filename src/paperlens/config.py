@@ -49,6 +49,12 @@ class Settings(BaseSettings):
     # 证据不足时是否去 arXiv 找论文（ask：询问用户；off：直接拒答）
     online_fallback: Literal["ask", "off"] = "ask"
 
+    # Web 服务：默认只监听本机；对外暴露时设置 API_KEY，请求需带 X-API-Key 头
+    api_host: str = "127.0.0.1"
+    api_port: int = 8000
+    api_key: SecretStr | None = None
+    max_upload_mb: int = 50
+
     # 运行数据目录
     data_dir: Path = Path("data")
 
@@ -67,6 +73,10 @@ class Settings(BaseSettings):
     @property
     def milvus_path(self) -> Path:
         return self.data_dir / "milvus.db"
+
+    @property
+    def upload_dir(self) -> Path:
+        return self.data_dir / "uploads"
 
     @property
     def checkpoint_path(self) -> Path:

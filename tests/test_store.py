@@ -22,6 +22,7 @@ def test_database_upsert_find_and_cards(tmp_path):
     assert db.find_papers("self rag")[0].meta.paper_id == "2310.11511"  # 忽略大小写与连字符
     assert db.find_papers("SELF-RAG")[0].meta.paper_id == "2310.11511"
     assert db.find_papers("corrective retrieval")[0].meta.paper_id == "2401.15884"
+    assert db.find_papers("CRAG")[0].meta.paper_id == "2401.15884"  # 标题首字母缩写
     assert db.find_papers("2401.15884")[0].meta.paper_id == "2401.15884"
     assert db.find_papers("GraphRAG") == []
     assert db.find_papers("x") == []

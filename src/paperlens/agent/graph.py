@@ -2,10 +2,13 @@
 
     analyze ──chat──────────────────────────────→ chat → END
        │ ──discover──→ search_arxiv
-       └──qa / explain / compare──→ retrieve
+       │ ──explain（点名 1 篇且在库里）──→ card → END
+       │ ──compare（点名 2–5 篇且都在库里）──→ compare → END
+       └──其余──→ retrieve
     retrieve ──证据充足──→ generate → END
              ──不足且未补充过──→ search_arxiv → confirm_ingest（interrupt）→ ingest → retrieve
              ──补充后仍不足 / 联网关闭──→ refuse → END
+    ingest 之后按意图回到 card / compare / retrieve（discover 直接结束）
 
 流式输出：节点通过 get_stream_writer() 写出 status / token / citations / message 事件，
 人机确认通过 interrupt() 暂停，调用方用 resume() 传回用户的选择。
@@ -27,6 +30,8 @@ from paperlens.ingest.arxiv_client import ArxivClient
 from paperlens.ingest.pipeline import ingest_arxiv
 from paperlens.ingest.schema import Chunk
 from paperlens.rag.answer import Citation, check_citations, stream_answer, strip_invalid
+from paperlens.rag.card import anchor_url, card_markdown, get_card
+from paperlens.rag.compare import MAX_PAPERS, compare_markdown, compare_papers
 from paperlens.rag.query import QueryAnalysis, analyze_query
 from paperlens.rag.retriever import Retriever, ScoredChunk
 from paperlens.services import Services
@@ -90,9 +95,13 @@ class PaperAgent:
         g.add_node("confirm_ingest", self.confirm_ingest)
         g.add_node("ingest", self.ingest)
         g.add_node("refuse", self.refuse)
+        g.add_node("card", self.card)
+        g.add_node("compare", self.compare)
 
         g.add_edge(START, "analyze")
-        g.add_conditional_edges("analyze", self.route_intent, ["chat", "retrieve", "search_arxiv"])
+        g.add_conditional_edges(
+            "analyze", self.route_intent, ["chat", "retrieve", "search_arxiv", "card", "compare"]
+        )
         g.add_conditional_edges(
             "retrieve", self.grade_evidence, ["generate", "search_arxiv", "refuse"]
         )
@@ -106,8 +115,10 @@ class PaperAgent:
             lambda s: "ingest" if s.get("picked") else "refuse",
             ["ingest", "refuse"],
         )
-        g.add_conditional_edges("ingest", self.after_ingest, ["retrieve", "refuse", END])
-        for node in ("chat", "generate", "refuse"):
+        g.add_conditional_edges(
+            "ingest", self.after_ingest, ["retrieve", "card", "compare", "refuse", END]
+        )
+        for node in ("chat", "generate", "refuse", "card", "compare"):
             g.add_edge(node, END)
         return g
 
@@ -117,13 +128,25 @@ class PaperAgent:
     def _analysis(state: AgentState) -> QueryAnalysis:
         return QueryAnalysis.model_validate(state["analysis"])
 
+    def _structured_route(self, state: AgentState) -> str | None:
+        """解读 / 对比：点名的论文都在库里时走卡片或对比表，否则交给检索问答（会触发联网补充）。"""
+        analysis = self._analysis(state)
+        ids, missing = self._resolve(analysis, state.get("ingested", []))
+        if missing:
+            return None
+        if analysis.intent == "explain" and len(ids) == 1:
+            return "card"
+        if analysis.intent == "compare" and 2 <= len(ids) <= MAX_PAPERS:
+            return "compare"
+        return None
+
     def route_intent(self, state: AgentState) -> str:
         intent = state["analysis"]["intent"]
         if intent == "chat":
             return "chat"
         if intent == "discover":
             return "search_arxiv"
-        return "retrieve"
+        return self._structured_route(state) or "retrieve"
 
     def grade_evidence(self, state: AgentState) -> str:
         """证据判定：重排最高分达到阈值，且点名的论文都在库里，才算充足。"""
@@ -139,7 +162,9 @@ class PaperAgent:
     def after_ingest(self, state: AgentState) -> str:
         if state["analysis"]["intent"] == "discover":
             return END
-        return "retrieve" if state.get("ingested") else "refuse"
+        if not state.get("ingested"):
+            return "refuse"
+        return self._structured_route(state) or "retrieve"
 
     # ------------------------------------------------------------ 节点
 
@@ -256,6 +281,41 @@ class PaperAgent:
             "citations": [asdict(c) for c in used],
             "messages": [AIMessage(answer)],
         }
+
+    def card(self, state: AgentState) -> dict:
+        analysis = self._analysis(state)
+        ids, _ = self._resolve(analysis, state.get("ingested", []))
+        record = self.services.db.get_paper(ids[0])
+        cached = self.services.db.get_card(ids[0]) is not None
+        _emit(
+            "status",
+            text="读取已缓存的解读卡片" if cached else f"通读全文生成解读卡片：{record.meta.title}",
+        )
+        try:
+            card = get_card(self.services, ids[0])
+        except Exception as exc:
+            text = f"解读卡片生成失败：{type(exc).__name__}: {exc}"
+            _emit("message", text=text)
+            return {"messages": [AIMessage(text)], "answer": text}
+        text = card_markdown(card, title=record.meta.title, url_of=lambda a: anchor_url(record, a))
+        _emit("card", paper_id=ids[0], title=record.meta.title, card=card.model_dump())
+        _emit("message", text=text)
+        return {"paper_ids": ids, "messages": [AIMessage(text)], "answer": text}
+
+    def compare(self, state: AgentState) -> dict:
+        analysis = self._analysis(state)
+        ids, _ = self._resolve(analysis, state.get("ingested", []))
+        _emit("status", text=f"基于解读卡片对比 {len(ids)} 篇论文（缺卡片的先生成）")
+        try:
+            result = compare_papers(self.services, ids, focus=analysis.standalone_question)
+        except Exception as exc:
+            text = f"对比失败：{type(exc).__name__}: {exc}"
+            _emit("message", text=text)
+            return {"messages": [AIMessage(text)], "answer": text}
+        text = compare_markdown(result)
+        _emit("compare", result=result.model_dump())
+        _emit("message", text=text)
+        return {"paper_ids": ids, "messages": [AIMessage(text)], "answer": text}
 
     def search_arxiv(self, state: AgentState) -> dict:
         analysis = self._analysis(state)

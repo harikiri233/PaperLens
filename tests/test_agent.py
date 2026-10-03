@@ -224,3 +224,66 @@ def test_history_is_passed_to_next_turn(make_agent):
     _collect(agent.stream("t", "它呢？"))
     assert "你好，我是 PaperLens。" in agent.services.llm.histories[-1]
     assert len(agent.history("t")) == 4
+
+
+def test_explain_mentioned_paper_routes_to_card(make_agent, monkeypatch):
+    from paperlens.rag.card import CardPoint, PaperCard
+
+    calls = []
+
+    def fake_card(services, paper_id, refresh=False):
+        calls.append(paper_id)
+        return PaperCard(tldr="一句话总结", method=[CardPoint(text="方法", anchor="S3")])
+
+    monkeypatch.setattr(graph_module, "get_card", fake_card)
+    agent = make_agent([_qa("讲讲 Other Paper", mentions=["Other Paper"], intent="explain")])
+    out = _collect(agent.stream("t", "讲讲 Other Paper"))
+    assert calls == ["other"]
+    assert agent.retriever.calls == []  # 不走检索
+    assert "一句话总结" in out["messages"][0]
+    assert agent.history("t")[-1]["content"].startswith("### Other Paper")
+
+
+def test_explain_without_mention_falls_back_to_rag(make_agent):
+    agent = make_agent([_qa("讲讲这个方向", intent="explain")])
+    _collect(agent.stream("t", "讲讲这个方向"))
+    assert agent.retriever.calls == [None]
+
+
+def test_compare_two_papers_routes_to_compare(make_agent, monkeypatch):
+    from paperlens.rag.compare import CompareCell, ComparedPaper, CompareResult, CompareRow
+
+    seen = []
+
+    def fake_compare(services, ids, focus=""):
+        seen.append(ids)
+        papers = [ComparedPaper(paper_id=i, title=i, short_title=i) for i in ids]
+        row = CompareRow(dimension="方法", cells=[CompareCell(paper_id=i, text=i) for i in ids])
+        return CompareResult(papers=papers, rows=[row], summary="差异总结")
+
+    monkeypatch.setattr(graph_module, "compare_papers", fake_compare)
+    agent = make_agent(
+        [_qa("对比 Other 和 Good", mentions=["Other Paper", "Good Paper"], intent="compare")]
+    )
+    agent.retriever.db.upsert_paper(PaperMeta(paper_id="good", title="Good Paper"), "html", 3)
+    out = _collect(agent.stream("t", "对比 Other 和 Good"))
+    assert seen == [["other", "good"]]
+    assert "差异总结" in out["messages"][0]
+
+
+def test_compare_with_missing_paper_supplements_then_compares(make_agent, monkeypatch):
+    seen = []
+
+    def failing_compare(services, ids, focus=""):
+        seen.append(ids)
+        raise ValueError("模型超时")
+
+    monkeypatch.setattr(graph_module, "compare_papers", failing_compare)
+    agent = make_agent(
+        [_qa("对比 Other 和 Good", mentions=["Other Paper", "Good"], intent="compare")]
+    )
+    out = _collect(agent.stream("t", "对比 Other 和 Good"))
+    assert out["interrupt"] is not None  # Good 不在库里，先联网补充
+    out = _collect(agent.resume("t", ["good"]))
+    assert seen == [["other", "good"]]
+    assert out["messages"][0].startswith("对比失败")  # 异常转成消息，不中断对话

@@ -1,0 +1,42 @@
+digraph A {
+  graph [fontname="Noto Sans CJK SC", rankdir=TB, nodesep=0.35, ranksep=0.5, pad="0.2", bgcolor="white"];
+  node  [fontname="Noto Sans CJK SC", shape=box, style="rounded,filled", fillcolor="#F3E5F5", color="#6A1B9A", fontsize=12];
+  edge  [fontname="Noto Sans CJK SC", fontsize=10, color="#555555"];
+  START [shape=circle, label="开始", fillcolor="#37474F", fontcolor="white", width=0.6];
+  END   [shape=doublecircle, label="结束", fillcolor="#37474F", fontcolor="white", width=0.5];
+
+  ana   [label="analyze（一次 JSON 调用）\n意图 · 指代消解后的独立问题 · 英文检索句\n点名的论文 · arXiv 关键词", fillcolor="#E1BEE7"];
+  START -> ana;
+
+  chat  [label="chat\n闲聊 / 与论文无关", fillcolor="#ECEFF1", color="#546E7A"];
+  card  [label="card\n整篇全文 → 解读卡片\n（SQLite 缓存）", fillcolor="#E3F2FD", color="#1565C0"];
+  cmp   [label="compare\n读取 / 并行生成各篇卡片\n→ 对比表", fillcolor="#E3F2FD", color="#1565C0"];
+  ret   [label="retrieve\ndense + BM25 → RRF → 重排\n对比题按论文分别检索", fillcolor="#E8F5E9", color="#2E7D32"];
+  disc  [label="search_arxiv\n关键词检索 → 重排过滤候选", fillcolor="#E0F7FA", color="#00838F"];
+
+  ana -> chat [label="chat"];
+  ana -> card [label="explain\n点名 1 篇且在库"];
+  ana -> cmp  [label="compare\n点名 2–5 篇且在库"];
+  ana -> ret  [label="qa / 其余"];
+  ana -> disc [label="discover"];
+
+  gen   [label="generate\n流式回答 · [n] 引用 · 越界编号清理", fillcolor="#E8F5E9", color="#2E7D32"];
+  ret -> gen  [label="最高重排分 ≥ 阈值\n且点名论文都在库"];
+  ret -> disc [label="不足且本轮未补充过"];
+  ret -> refuse [label="补充后仍不足\n或联网关闭"];
+
+  ask   [label="confirm_ingest\ninterrupt() 暂停，等用户勾选", fillcolor="#FFF3E0", color="#EF6C00"];
+  ing   [label="ingest\n下载 → 解析 → 分块 → 嵌入 → 入库", fillcolor="#E0F7FA", color="#00838F"];
+  refuse[label="refuse\n说明证据不足 + 最接近的论文", fillcolor="#FFEBEE", color="#C62828"];
+  disc -> ask   [label="有候选"];
+  disc -> refuse [label="无候选"];
+  ask -> ing    [label="选了论文"];
+  ask -> refuse [label="都不要"];
+  ing -> ret    [label="qa", style=dashed];
+  ing -> card   [label="explain", style=dashed];
+  ing -> cmp    [label="compare", style=dashed];
+  ing -> END    [label="discover"];
+
+  gen -> END; chat -> END; card -> END; cmp -> END; refuse -> END;
+  { rank=same; chat; card; cmp; ret; disc; }
+}

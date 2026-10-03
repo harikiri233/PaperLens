@@ -366,6 +366,85 @@ def ask(
         _print_usage(services.tracker)
 
 
+# ---------------------------------------------------------------- M5：解读卡片与多篇对比
+
+
+def _resolve_one(services, name: str) -> str:
+    """命令行参数可以是 paper_id，也可以是标题里的系统名（如 Self-RAG）。"""
+    found = services.db.find_papers(name, limit=1)
+    if not found:
+        console.print(f"[red]知识库里没有找到论文：{name}[/red]")
+        raise typer.Exit(code=1)
+    return found[0].meta.paper_id
+
+
+@app.command()
+def card(
+    paper: str = typer.Argument(..., help="论文 ID 或标题里的名称，如 2310.11511 / Self-RAG"),
+    refresh: bool = typer.Option(False, "--refresh", help="忽略缓存，重新生成"),
+    output: Path | None = typer.Option(None, "--output", "-o", help="导出 Markdown 的路径"),
+) -> None:
+    """单篇解读卡片：整篇全文送进长上下文，抽取问题 / 方法 / 实验 / 结果 / 局限并标出处。"""
+    from paperlens.rag.card import CardError, anchor_url, card_markdown, get_card
+    from paperlens.services import Services
+
+    with Services(get_settings()) as services:
+        pid = _resolve_one(services, paper)
+        record = services.db.get_paper(pid)
+        cached = services.db.get_card(pid) is not None and not refresh
+        console.print(
+            f"[dim]{'读取缓存的卡片' if cached else '通读全文生成卡片'}：{record.meta.title}[/dim]"
+        )
+        try:
+            result = get_card(services, pid, refresh=refresh)
+        except CardError as exc:
+            console.print(f"[red]{exc}[/red]")
+            raise typer.Exit(code=1) from exc
+        text = card_markdown(
+            result, title=record.meta.title, url_of=lambda a: anchor_url(record, a)
+        )
+        console.print(Markdown(text))
+        if output:
+            output.write_text(text, encoding="utf-8")
+            console.print(f"[green]已导出：{output}[/green]")
+        _print_usage(services.tracker)
+
+
+@app.command()
+def compare(
+    papers_: list[str] = typer.Argument(..., metavar="PAPERS...", help="2–5 篇论文的 ID 或名称"),
+    focus: str = typer.Option("", "--focus", help="对比的关注点，如“检索时机的决策方式”"),
+    output: Path | None = typer.Option(None, "--output", "-o", help="导出 Markdown 的路径"),
+) -> None:
+    """多篇对比：基于各篇的解读卡片生成对比表（缺卡片的先并行生成）。"""
+    from paperlens.rag.card import CardError
+    from paperlens.rag.compare import compare_markdown, compare_papers
+    from paperlens.services import Services
+
+    with Services(get_settings()) as services:
+        ids = [_resolve_one(services, name) for name in papers_]
+        missing = [i for i in ids if services.db.get_card(i) is None]
+        if missing:
+            console.print(f"[dim]先生成 {len(missing)} 张解读卡片：{', '.join(missing)}[/dim]")
+        try:
+            result = compare_papers(services, ids, focus=focus)
+        except CardError as exc:
+            console.print(f"[red]{exc}[/red]")
+            raise typer.Exit(code=1) from exc
+        table = Table(show_lines=True, expand=True)
+        table.add_column("维度", style="bold", ratio=1)
+        for p in result.papers:
+            table.add_column(f"{p.short_title}\n[dim]{p.paper_id}[/dim]", ratio=2)
+        for row in result.rows:
+            table.add_row(row.dimension, *(c.text for c in row.cells))
+        console.print(table)
+        console.print(f"[bold]总结[/bold]：{result.summary}", highlight=False)
+        if output:
+            output.write_text(compare_markdown(result), encoding="utf-8")
+            console.print(f"[green]已导出：{output}[/green]")
+        _print_usage(services.tracker)
+
+
 # ---------------------------------------------------------------- M4：Agent 多轮对话
 
 
@@ -462,6 +541,71 @@ def _ask_candidates(payload: dict) -> list[str]:
         if part.isdigit() and 1 <= int(part) <= len(candidates):
             picked.append(candidates[int(part) - 1]["paper_id"])
     return picked
+
+
+# ---------------------------------------------------------------- M6：Web 服务
+
+
+@app.command()
+def serve(
+    host: str | None = typer.Option(
+        None, "--host", help="监听地址，默认读取 API_HOST（127.0.0.1）"
+    ),
+    port: int | None = typer.Option(None, "--port", help="端口，默认读取 API_PORT（8000）"),
+) -> None:
+    """启动 REST API（FastAPI + SSE）。Milvus Lite 单进程限制：服务运行时不要再跑 ingest 等命令。"""
+    import uvicorn
+
+    from paperlens.api.app import create_app
+
+    settings = get_settings()
+    host = host or settings.api_host
+    port = port or settings.api_port
+    if host not in ("127.0.0.1", "localhost", "::1") and settings.api_key is None:
+        console.print(
+            "[yellow]警告：服务监听在非本机地址，但没有设置 API_KEY，任何能访问这个端口的人"
+            "都可以调用接口（消耗你的模型额度、删除论文）。建议在 .env 里设置 API_KEY。[/yellow]"
+        )
+    console.print(f"PaperLens API：http://{host}:{port}  接口文档：http://{host}:{port}/docs")
+    uvicorn.run(create_app(settings), host=host, port=port, log_level="info")
+
+
+@app.command()
+def ui(
+    port: int = typer.Option(8501, "--port", help="Streamlit 端口"),
+    api: str = typer.Option(
+        "", "--api", help="后端地址，默认读取 PAPERLENS_API 或 http://127.0.0.1:8000"
+    ),
+) -> None:
+    """启动 Streamlit 界面（需要先运行 paperlens serve）。"""
+    import os
+    import subprocess
+    import sys
+
+    settings = get_settings()
+    env = dict(os.environ)
+    env.setdefault("PAPERLENS_API", f"http://127.0.0.1:{settings.api_port}")
+    if api:
+        env["PAPERLENS_API"] = api
+    if settings.api_key is not None:
+        env.setdefault("API_KEY", settings.api_key.get_secret_value())
+    cmd = [
+        sys.executable,
+        "-m",
+        "streamlit",
+        "run",
+        str(Path(__file__).parent / "ui" / "app.py"),
+        "--server.port",
+        str(port),
+        "--server.address",
+        "127.0.0.1",
+        "--server.headless",
+        "true",
+        "--browser.gatherUsageStats",
+        "false",
+    ]
+    console.print(f"界面：http://127.0.0.1:{port}  后端：{env['PAPERLENS_API']}")
+    raise typer.Exit(subprocess.call(cmd, env=env))
 
 
 if __name__ == "__main__":

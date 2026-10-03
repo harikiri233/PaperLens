@@ -1,0 +1,32 @@
+digraph G {
+  graph [fontname="Noto Sans CJK SC", bgcolor="white", pad="0.2"];
+  node  [fontname="Noto Sans CJK SC", shape=plaintext];
+  arch [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="6" CELLPADDING="9">
+ <TR>
+  <TD BGCOLOR="#37474F"><FONT COLOR="white"><B>接入层</B></FONT></TD>
+  <TD BGCOLOR="#ECEFF1" COLSPAN="2">Streamlit 界面（HTTP 调用 API）<BR/><FONT POINT-SIZE="10">问答 · 论文库 · 对比 · 检索调试</FONT></TD>
+  <TD BGCOLOR="#ECEFF1">CLI（Typer + Rich）<BR/><FONT POINT-SIZE="10">parse · ingest · search · ask · chat<BR/>card · compare · serve · ui</FONT></TD>
+ </TR>
+ <TR>
+  <TD BGCOLOR="#1565C0"><FONT COLOR="white"><B>服务层</B></FONT></TD>
+  <TD BGCOLOR="#E3F2FD" COLSPAN="3">FastAPI<BR/><FONT POINT-SIZE="10">SSE 流式问答 · interrupt 恢复 · 单线程入库任务队列 · PDF 上传 · 卡片 / 对比 / 检索调试 · 可选 API Key</FONT></TD>
+ </TR>
+ <TR>
+  <TD BGCOLOR="#6A1B9A"><FONT COLOR="white"><B>Agent 层</B></FONT></TD>
+  <TD BGCOLOR="#F3E5F5" COLSPAN="3">LangGraph StateGraph（9 个节点）<BR/><FONT POINT-SIZE="10">查询分析与意图路由 · 证据判定 · 联网补充（interrupt 人机确认） · SqliteSaver 多轮记忆 · 自定义事件流</FONT></TD>
+ </TR>
+ <TR>
+  <TD BGCOLOR="#2E7D32"><FONT COLOR="white"><B>RAG 层</B></FONT></TD>
+  <TD BGCOLOR="#E8F5E9">入库<BR/><FONT POINT-SIZE="10">arXiv HTML（LaTeXML）/ PDF 回退<BR/>章节树 + 段落锚点 → 章节内分块<BR/>+ 上下文标题 → bge-m3 嵌入</FONT></TD>
+  <TD BGCOLOR="#E8F5E9">检索<BR/><FONT POINT-SIZE="10">dense（原问题）+ BM25（英文改写）<BR/>→ RRF 融合 → bge-reranker 重排</FONT></TD>
+  <TD BGCOLOR="#E8F5E9">生成<BR/><FONT POINT-SIZE="10">带 [n] 引用的流式回答<BR/>长上下文解读卡片 · 基于卡片的对比表</FONT></TD>
+ </TR>
+ <TR>
+  <TD BGCOLOR="#4E342E"><FONT COLOR="white"><B>存储与模型</B></FONT></TD>
+  <TD BGCOLOR="#EFEBE9">Milvus Lite<BR/><FONT POINT-SIZE="10">稠密向量 + 内置 BM25 Function</FONT></TD>
+  <TD BGCOLOR="#EFEBE9">SQLite<BR/><FONT POINT-SIZE="10">论文元数据 · 卡片缓存 · 会话检查点</FONT></TD>
+  <TD BGCOLOR="#FCE4EC">DeepSeek（deepseek-flash）<BR/>硅基流动 bge-m3 / bge-reranker-v2-m3</TD>
+ </TR>
+</TABLE>>];
+}

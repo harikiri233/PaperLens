@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "beautifulsoup4==4.15.0",
+    "fastapi==0.142.2",
     "httpx==0.28.1",
     "langgraph==1.2.12",
     "langgraph-checkpoint-sqlite==3.1.1",
@@ -16,9 +17,13 @@ dependencies = [
     "pydantic-settings==2.15.0",
     "pymilvus==3.0.2",
     "pymupdf4llm==1.28.2",
+    "python-multipart==0.0.32",
     "rich==15.0.0",
+    "sse-starlette==3.5.0",
+    "streamlit==1.65.0",
     "tenacity==9.1.4",
     "typer==0.27.2",
+    "uvicorn==0.54.0",
 ]
 
 [project.scripts]
@@ -47,8 +52,8 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 ignore = ["E501"]
 
 [tool.ruff.lint.flake8-bugbear]
-# Typer 的标准写法是在参数默认值里调用 typer.Option / typer.Argument
-extend-immutable-calls = ["typer.Option", "typer.Argument"]
+# Typer / FastAPI 的标准写法是在参数默认值里调用 typer.Option、fastapi.File 等
+extend-immutable-calls = ["typer.Option", "typer.Argument", "fastapi.File", "fastapi.Depends"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
