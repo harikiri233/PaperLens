@@ -212,11 +212,11 @@ class PaperAgent:
         ids: list[str] = []
         missing: list[str] = []
         for mention in analysis.paper_mentions:
-            found = self.services.db.find_papers(mention, limit=1)
+            found, ambiguous = self.services.db.match_paper(mention)
             if found:
-                if found[0].meta.paper_id not in ids:
-                    ids.append(found[0].meta.paper_id)
-            else:
+                if found.meta.paper_id not in ids:
+                    ids.append(found.meta.paper_id)
+            elif not ambiguous:  # 泛称（匹配到多篇）既不限定范围，也不算缺失
                 missing.append(mention)
         if analysis.paper_mentions and ingested:
             # 联网补充的论文标题里不一定出现用户说的简称（如 FLARE），直接并入过滤范围

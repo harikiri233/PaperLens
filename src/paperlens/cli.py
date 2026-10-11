@@ -608,5 +608,49 @@ def ui(
     raise typer.Exit(subprocess.call(cmd, env=env))
 
 
+# ---------------------------------------------------------------- M8：评估
+
+
+@app.command("eval")
+def eval_cmd(
+    config: list[str] = typer.Option(None, "--config", "-c", help="只跑这些配置，如 -c A0 -c A3"),
+    answers: bool = typer.Option(False, "--answers", help="同时跑端到端问答（调用 LLM，约 ¥0.5）"),
+) -> None:
+    """在 eval/qa.jsonl 上评估检索（A0–A4 消融）与问答，报告写到 eval/reports/。"""
+    from paperlens.eval.report import write_report
+    from paperlens.eval.runner import run_eval
+
+    out = run_eval(
+        get_settings(),
+        configs=list(config or []) or None,
+        answers=answers,
+        log=lambda m: console.print(f"[dim]{m}[/dim]"),
+    )
+    table = Table(title="检索消融（可回答的 40 题）")
+    for col in ("配置", "Hit@5", "Recall@5", "MRR@10", "术语题 Hit@5", "中文题 Hit@5", "延迟 p50"):
+        table.add_column(col, justify="left" if col == "配置" else "right")
+    for name, r in out.retrieval.items():
+        m = r["metrics"]
+        table.add_row(
+            name,
+            f"{m['all']['hit@5']:.1%}",
+            f"{m['all']['recall@5']:.1%}",
+            f"{m['all']['mrr@10']:.3f}",
+            f"{m.get('term', {}).get('hit@5', 0):.1%}",
+            f"{m.get('lang_zh', {}).get('hit@5', 0):.1%}",
+            f"{r['latency_p50']:.2f}s",
+        )
+    console.print(table)
+    if out.answers:
+        a = out.answers
+        console.print(
+            f"问答：正确率 {a['accuracy_answerable']:.1%} · 拒答准确率 {a['refusal_accuracy']:.1%}"
+            f" · 引用合法率 {a['citation_valid_rate']:.1%} · 延迟 p50 {a['latency_p50']:.1f}s"
+            f" · 单题 ${a['cost_per_question_usd']:.5f}"
+        )
+    path = write_report(Path("eval/reports"))
+    console.print(f"报告：{path}（评审用 LLM 花费 ${out.judge_cost_usd:.4f}）")
+
+
 if __name__ == "__main__":
     app()

@@ -121,34 +121,50 @@ class Database:
         with self._tx() as conn:
             return conn.execute("DELETE FROM papers WHERE paper_id = ?", (paper_id,)).rowcount > 0
 
-    def find_papers(self, mention: str, *, limit: int = 3) -> list[PaperRecord]:
-        """按标题模糊匹配论文，用于把问题里点名的论文（如 "Self-RAG"）解析成 ID。
-
-        先精确匹配 ID，再匹配标题冒号前的系统名或首字母缩写（"Corrective Retrieval Augmented
-        Generation" → CRAG），最后做子串匹配；忽略大小写和连字符。
-        """
+    def _scored_matches(self, mention: str) -> list[tuple[int, PaperRecord]]:
         mention = mention.strip()
         if not mention:
             return []
         exact = self.get_paper(mention)
         if exact:
-            return [exact]
+            return [(0, exact)]
         key = _normalize(mention)
         if len(key) < 3:
             return []
         scored: list[tuple[int, PaperRecord]] = []
         for record in self.list_papers():
             title = record.meta.title
-            short = _normalize(title.split(":", 1)[0])
-            full = _normalize(title)
-            if key == short:
+            short_part = title.split(":", 1)[0]
+            if key == _normalize(short_part):
                 scored.append((0, record))
-            elif short.startswith(key) or key in short or key == _acronym(title):
+            elif _word_substring(key, short_part) or key == _acronym(title):
                 scored.append((1, record))
-            elif key in full:
+            elif _word_substring(key, title):
                 scored.append((2, record))
         scored.sort(key=lambda x: x[0])
-        return [r for _, r in scored[:limit]]
+        return scored
+
+    def find_papers(self, mention: str, *, limit: int = 3) -> list[PaperRecord]:
+        """按标题模糊匹配论文，用于把问题里点名的论文（如 "Self-RAG"）解析成 ID。
+
+        先精确匹配 ID，再匹配标题冒号前的系统名或首字母缩写（"Corrective Retrieval Augmented
+        Generation" → CRAG），最后做子串匹配；忽略大小写和连字符。
+        子串必须从单词开头开始匹配：否则 "RAG" 会命中 "Leve-rag-ing Passage Retrieval…"（评估时发现）。
+        """
+        return [r for _, r in self._scored_matches(mention)[:limit]]
+
+    def match_paper(self, mention: str) -> tuple[PaperRecord | None, bool]:
+        """返回 (最匹配的论文, 是否有歧义)。
+
+        最佳档次有多篇论文时视为泛称（如库里有五篇标题带 RAG 的论文时说 "RAG"），
+        调用方不应据此限定检索范围，也不应当成"库里没有"去联网补充。
+        """
+        scored = self._scored_matches(mention)
+        if not scored:
+            return None, False
+        best = scored[0][0]
+        ambiguous = best > 0 and sum(1 for tier, _ in scored if tier == best) > 1
+        return (None if ambiguous else scored[0][1]), ambiguous
 
     # ---- cards ----
 
@@ -179,6 +195,12 @@ def _acronym(title: str) -> str:
     """标题冒号前部分中大写开头单词的首字母，小写返回。"""
     words = re.split(r"[\s\-]+", title.split(":", 1)[0])
     return "".join(w[0] for w in words if w[:1].isupper()).lower()
+
+
+def _word_substring(key: str, text: str) -> bool:
+    """key（已规范化）是否从 text 的某个单词开头起出现，可以跨越多个单词（"selfrag" 匹配 "Self-RAG"）。"""
+    words = [_normalize(w) for w in re.split(r"[^0-9A-Za-z]+", text) if w]
+    return any("".join(words[i:]).startswith(key) for i in range(len(words)))
 
 
 def _normalize(text: str) -> str:

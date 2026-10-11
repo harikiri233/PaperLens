@@ -63,10 +63,13 @@ def analyze_query(
 
 
 def resolve_papers(db: Database, mentions: list[str]) -> list[str]:
-    """把点名的论文解析成库里的 paper_id，每个名称取最匹配的一篇；按出现顺序去重。"""
+    """把点名的论文解析成库里的 paper_id，每个名称取最匹配的一篇；按出现顺序去重。
+
+    有歧义的泛称（匹配到多篇）跳过，不用来限定检索范围。
+    """
     ids: list[str] = []
     for mention in mentions:
-        for record in db.find_papers(mention, limit=1):
-            if record.meta.paper_id not in ids:
-                ids.append(record.meta.paper_id)
+        record, _ = db.match_paper(mention)
+        if record and record.meta.paper_id not in ids:
+            ids.append(record.meta.paper_id)
     return ids

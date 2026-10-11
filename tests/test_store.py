@@ -26,6 +26,17 @@ def test_database_upsert_find_and_cards(tmp_path):
     assert db.find_papers("2401.15884")[0].meta.paper_id == "2401.15884"
     assert db.find_papers("GraphRAG") == []
     assert db.find_papers("x") == []
+    # 子串要从单词开头匹配："RAG" 不能命中 "Leveraging"
+    db.upsert_paper(
+        _meta("2007.01282", "Leveraging Passage Retrieval with Generative Models"), "html", 23
+    )
+    assert [r.meta.paper_id for r in db.find_papers("RAG")] == ["2310.11511"]
+    assert db.find_papers("passage retrieval")[0].meta.paper_id == "2007.01282"
+    # 泛称匹配到多篇时视为有歧义
+    db.upsert_paper(_meta("2407.08223", "Speculative RAG: Enhancing Retrieval"), "html", 72)
+    assert db.match_paper("RAG") == (None, True)
+    assert db.match_paper("Self-RAG")[0].meta.paper_id == "2310.11511"
+    assert db.match_paper("GraphRAG") == (None, False)
 
     db.save_card("2310.11511", {"method": "reflection tokens"}, "deepseek-flash")
     assert db.get_card("2310.11511") == {"method": "reflection tokens"}

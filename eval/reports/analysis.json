@@ -1,0 +1,663 @@
+{
+ "q01:In the Reflexion paper's ALFWorld analysis, at what hallucination rate does the ReAct-only baseline agent converge?": {
+  "intent": "qa",
+  "standalone_question": "In the Reflexion paper's ALFWorld analysis, at what hallucination rate does the ReAct-only baseline agent converge?",
+  "english_query": "In the Reflexion paper's ALFWorld analysis, at what hallucination rate does the ReAct-only baseline agent converge?",
+  "paper_mentions": [
+   "Reflexion"
+  ],
+  "search_keywords": [
+   "Reflexion",
+   "ALFWorld",
+   "ReAct",
+   "hallucination rate"
+  ]
+ },
+ "q02:在 ColBERT 论文的端到端 top-k 检索实验中，模型从 MS MARCO 的多少篇文档中为每个查询直接检索 top-1000 文档？": {
+  "intent": "qa",
+  "standalone_question": "在 ColBERT 论文的端到端 top-k 检索实验中，模型从 MS MARCO 的多少篇文档中为每个查询直接检索 top-1000 文档？",
+  "english_query": "In the ColBERT paper's end-to-end top-k retrieval experiment, from how many documents in MS MARCO does the model directly retrieve the top-1000 documents for each query?",
+  "paper_mentions": [
+   "ColBERT"
+  ],
+  "search_keywords": [
+   "ColBERT",
+   "MS MARCO",
+   "end-to-end retrieval",
+   "top-k retrieval"
+  ]
+ },
+ "q03:In the Transformer architecture, what is the dimensionality of the inner-layer of the position-wise feed-forward network?": {
+  "intent": "qa",
+  "standalone_question": "In the Transformer architecture, what is the dimensionality of the inner-layer of the position-wise feed-forward network?",
+  "english_query": "In the Transformer architecture, what is the dimensionality of the inner-layer of the position-wise feed-forward network?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "Transformer",
+   "position-wise feed-forward network",
+   "inner-layer dimensionality"
+  ]
+ },
+ "q04:在 RAG 论文中，RAG-Sequence 的两种解码过程分别叫什么名字？": {
+  "intent": "qa",
+  "standalone_question": "在 RAG 论文中，RAG-Sequence 的两种解码过程分别叫什么名字？",
+  "english_query": "In the RAG paper, what are the names of the two decoding processes for RAG-Sequence?",
+  "paper_mentions": [
+   "RAG"
+  ],
+  "search_keywords": [
+   "RAG-Sequence",
+   "decoding",
+   "retrieval-augmented generation"
+  ]
+ },
+ "q05:In the REPLUG paper, what average improvement over baselines did RePlug LSR achieve across eight language models on language modeling tasks?": {
+  "intent": "qa",
+  "standalone_question": "In the REPLUG paper, what average improvement over baselines did RePlug LSR achieve across eight language models on language modeling tasks?",
+  "english_query": "In the REPLUG paper, what average improvement over baselines did RePlug LSR achieve across eight language models on language modeling tasks?",
+  "paper_mentions": [
+   "REPLUG"
+  ],
+  "search_keywords": [
+   "REPLUG",
+   "RePlug LSR",
+   "language modeling"
+  ]
+ },
+ "q06:在 Self-RAG 中，训练 critic 模型时使用了哪个预训练语言模型进行初始化？": {
+  "intent": "qa",
+  "standalone_question": "在 Self-RAG 中，训练 critic 模型时使用了哪个预训练语言模型进行初始化？",
+  "english_query": "In Self-RAG, which pretrained language model is used to initialize the critic model during training?",
+  "paper_mentions": [
+   "Self-RAG"
+  ],
+  "search_keywords": [
+   "Self-RAG",
+   "critic model",
+   "pretrained language model",
+   "initialization"
+  ]
+ },
+ "q07:In the Fusion-in-Decoder paper, how many passages are retrieved per question by default, and how long are they truncated to?": {
+  "intent": "qa",
+  "standalone_question": "In the Fusion-in-Decoder paper, how many passages are retrieved per question by default, and how long are they truncated to?",
+  "english_query": "In the Fusion-in-Decoder paper, how many passages are retrieved per question by default, and how long are they truncated to?",
+  "paper_mentions": [
+   "Fusion-in-Decoder"
+  ],
+  "search_keywords": [
+   "Fusion-in-Decoder",
+   "passage retrieval",
+   "truncation length"
+  ]
+ },
+ "q08:在 Voyager 的自动课程模块中，用于生成任务描述的输入提示由哪几个部分组成？": {
+  "intent": "qa",
+  "standalone_question": "在 Voyager 的自动课程模块中，用于生成任务描述的输入提示由哪几个部分组成？",
+  "english_query": "In Voyager's automatic curriculum module, what are the components of the input prompt used to generate task descriptions?",
+  "paper_mentions": [
+   "Voyager"
+  ],
+  "search_keywords": [
+   "Voyager",
+   "automatic curriculum",
+   "task description",
+   "prompt"
+  ]
+ },
+ "q09:In the paper 'The Viability of Crowdsourcing for RAG Evaluation', what difference in readability scores was found between human-authored responses and LLM-generated responses, based on Flesch reading ease indices?": {
+  "intent": "qa",
+  "standalone_question": "In the paper 'The Viability of Crowdsourcing for RAG Evaluation', what difference in readability scores was found between human-authored responses and LLM-generated responses, based on Flesch reading ease indices?",
+  "english_query": "In the paper 'The Viability of Crowdsourcing for RAG Evaluation', what difference in readability scores was found between human-authored responses and LLM-generated responses, based on Flesch reading ease indices?",
+  "paper_mentions": [
+   "The Viability of Crowdsourcing for RAG Evaluation"
+  ],
+  "search_keywords": [
+   "crowdsourcing RAG evaluation",
+   "readability Flesch reading ease",
+   "human-authored responses",
+   "LLM-generated responses"
+  ]
+ },
+ "q10:在 Atlas 论文中，针对 64-shot NQ 任务，使用 Product Quantization 对 Wikipedia 索引进行压缩时，索引大小最多可以从多少 GB 压缩到多少 GB 而性能下降可以忽略不计？": {
+  "intent": "qa",
+  "standalone_question": "在 Atlas 论文中，针对 64-shot NQ 任务，使用 Product Quantization 对 Wikipedia 索引进行压缩时，索引大小最多可以从多少 GB 压缩到多少 GB 而性能下降可以忽略不计？",
+  "english_query": "In the Atlas paper, for the 64-shot NQ task, when using Product Quantization to compress the Wikipedia index, from how many GB to how many GB can the index size be compressed at most with negligible performance degradation?",
+  "paper_mentions": [
+   "Atlas"
+  ],
+  "search_keywords": [
+   "Atlas",
+   "Product Quantization",
+   "Wikipedia index",
+   "64-shot NQ"
+  ]
+ },
+ "q11:In the CRAG framework, what are the three confidence degrees that the retrieval evaluator assigns to trigger corrective actions?": {
+  "intent": "qa",
+  "standalone_question": "In the CRAG framework, what are the three confidence degrees that the retrieval evaluator assigns to trigger corrective actions?",
+  "english_query": "In the CRAG framework, what are the three confidence degrees that the retrieval evaluator assigns to trigger corrective actions?",
+  "paper_mentions": [
+   "CRAG"
+  ],
+  "search_keywords": [
+   "CRAG",
+   "retrieval evaluator",
+   "confidence degrees",
+   "corrective actions"
+  ]
+ },
+ "q12:在 HotpotQA 任务上，当使用 PaLM-8B 或 PaLM-62B 进行微调时，ReAct 相比其他三种方法表现如何？": {
+  "intent": "qa",
+  "standalone_question": "在 HotpotQA 任务上，当使用 PaLM-8B 或 PaLM-62B 进行微调时，ReAct 相比其他三种方法表现如何？",
+  "english_query": "On HotpotQA, when fine-tuning with PaLM-8B or PaLM-62B, how does ReAct perform compared to the other three methods?",
+  "paper_mentions": [
+   "ReAct"
+  ],
+  "search_keywords": [
+   "ReAct",
+   "HotpotQA",
+   "PaLM",
+   "fine-tuning"
+  ]
+ },
+ "q13:In the GraphRAG paper, what were the two datasets used in Experiment 1, and how many tokens did each contain?": {
+  "intent": "qa",
+  "standalone_question": "In the GraphRAG paper, what were the two datasets used in Experiment 1, and how many tokens did each contain?",
+  "english_query": "In the GraphRAG paper, what were the two datasets used in Experiment 1, and how many tokens did each contain?",
+  "paper_mentions": [
+   "GraphRAG"
+  ],
+  "search_keywords": [
+   "GraphRAG",
+   "datasets",
+   "tokens",
+   "Experiment 1"
+  ]
+ },
+ "q14:在论文 Active Retrieval Augmented Generation 的 long-form QA 实验中，作者为 ASQA 数据集创建了一个新设置（ASQA-hint），该设置的作用是什么？": {
+  "intent": "qa",
+  "standalone_question": "在论文 Active Retrieval Augmented Generation 的 long-form QA 实验中，作者为 ASQA 数据集创建的新设置 ASQA-hint 的作用是什么？",
+  "english_query": "In the paper Active Retrieval Augmented Generation, what is the purpose of the new setting ASQA-hint created for the ASQA dataset in the long-form QA experiments?",
+  "paper_mentions": [
+   "Active Retrieval Augmented Generation"
+  ],
+  "search_keywords": [
+   "active retrieval augmented generation",
+   "ASQA",
+   "long-form question answering"
+  ]
+ },
+ "q15:In the survey's discussion of chunking strategies for RAG indexing, what method uses sentences as the retrieval unit while providing the preceding and following sentences as larger context to the language model?": {
+  "intent": "qa",
+  "standalone_question": "In the survey's discussion of chunking strategies for RAG indexing, what method uses sentences as the retrieval unit while providing the preceding and following sentences as larger context to the language model?",
+  "english_query": "In the survey's discussion of chunking strategies for RAG indexing, what method uses sentences as the retrieval unit while providing the preceding and following sentences as larger context to the language model?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "chunking strategies",
+   "RAG indexing",
+   "sentence retrieval unit",
+   "context window"
+  ]
+ },
+ "q16:在 Ragas 框架中，评估答案相关性（answer relevance）时，通过生成潜在问题并计算相似度来得到分数，该相似度具体是如何计算的？": {
+  "intent": "qa",
+  "standalone_question": "在 Ragas 框架中，评估答案相关性（answer relevance）时，通过生成潜在问题并计算相似度来得到分数，该相似度具体是如何计算的？",
+  "english_query": "In the Ragas framework, when evaluating answer relevance by generating potential questions and computing similarity to obtain a score, how exactly is this similarity calculated?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "Ragas",
+   "answer relevance",
+   "similarity calculation"
+  ]
+ },
+ "q17:In the trainable query rewriting scheme of this paper, what criterion is used to filter the pseudo-labeled queries for the warm-up dataset?": {
+  "intent": "qa",
+  "standalone_question": "In the trainable query rewriting scheme of this paper, what criterion is used to filter the pseudo-labeled queries for the warm-up dataset?",
+  "english_query": "In the trainable query rewriting scheme of this paper, what criterion is used to filter the pseudo-labeled queries for the warm-up dataset?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "query rewriting",
+   "pseudo-labeled queries",
+   "warm-up dataset"
+  ]
+ },
+ "q18:在无监督设置下，Contriever 在 BEIR 基准的 recall@100 指标上，于多少个数据集上表现优于 BM25？": {
+  "intent": "qa",
+  "standalone_question": "在无监督设置下，Contriever 在 BEIR 基准的 recall@100 指标上，于多少个数据集上表现优于 BM25？",
+  "english_query": "In the unsupervised setting, on how many datasets does Contriever outperform BM25 on the BEIR benchmark in terms of recall@100?",
+  "paper_mentions": [
+   "Contriever",
+   "BM25"
+  ],
+  "search_keywords": [
+   "Contriever",
+   "BM25",
+   "BEIR benchmark",
+   "recall@100"
+  ]
+ },
+ "q19:In M3-Embedding's efficient batching strategy, what technique is used to iteratively encode sub-batches when handling long-sequence training data to increase batch size?": {
+  "intent": "qa",
+  "standalone_question": "In M3-Embedding's efficient batching strategy, what technique is used to iteratively encode sub-batches when handling long-sequence training data to increase batch size?",
+  "english_query": "In M3-Embedding's efficient batching strategy, what technique is used to iteratively encode sub-batches when handling long-sequence training data to increase batch size?",
+  "paper_mentions": [
+   "M3-Embedding"
+  ],
+  "search_keywords": [
+   "M3-Embedding",
+   "efficient batching",
+   "long-sequence training",
+   "sub-batch encoding"
+  ]
+ },
+ "q20:HyDE 将稠密检索分解为哪两个任务？": {
+  "intent": "qa",
+  "standalone_question": "HyDE 将稠密检索分解为哪两个任务？",
+  "english_query": "What two tasks does HyDE decompose dense retrieval into?",
+  "paper_mentions": [
+   "HyDE"
+  ],
+  "search_keywords": [
+   "HyDE",
+   "dense retrieval",
+   "hypothetical document embeddings"
+  ]
+ },
+ "q21:In the paper's experiments comparing MPT-30B and MPT-30B-Instruct on multi-document QA, what performance pattern did both models exhibit as the position of relevant information changed?": {
+  "intent": "qa",
+  "standalone_question": "In the paper's experiments comparing MPT-30B and MPT-30B-Instruct on multi-document QA, what performance pattern did both models exhibit as the position of relevant information changed?",
+  "english_query": "MPT-30B MPT-30B-Instruct multi-document QA performance pattern position of relevant information",
+  "paper_mentions": [],
+  "search_keywords": [
+   "multi-document QA",
+   "MPT-30B",
+   "position bias",
+   "long context"
+  ]
+ },
+ "q22:RETRO 的实验中，把评估时的检索库从 Wikipedia 扩大到整个 MassiveText，语言建模效果怎样变化？": {
+  "intent": "qa",
+  "standalone_question": "RETRO 的实验中，把评估时的检索库从 Wikipedia 扩大到整个 MassiveText，语言建模效果怎样变化？",
+  "english_query": "In RETRO's experiments, how does language modeling performance change when scaling the retrieval database at evaluation time from Wikipedia to the full MassiveText?",
+  "paper_mentions": [
+   "RETRO"
+  ],
+  "search_keywords": [
+   "RETRO",
+   "retrieval database",
+   "MassiveText",
+   "language modeling"
+  ]
+ },
+ "q23:In the Game of 24 experiments, what success rate does Tree of Thoughts achieve with a breadth of b=5?": {
+  "intent": "qa",
+  "standalone_question": "In the Game of 24 experiments, what success rate does Tree of Thoughts achieve with a breadth of b=5?",
+  "english_query": "In the Game of 24 experiments, what success rate does Tree of Thoughts achieve with a breadth of b=5?",
+  "paper_mentions": [
+   "Tree of Thoughts"
+  ],
+  "search_keywords": [
+   "Tree of Thoughts",
+   "Game of 24",
+   "success rate"
+  ]
+ },
+ "q24:在 DPR 论文中，使用 FAISS 内存索引时，系统每秒能处理多少个问题并返回每个问题的前 100 个段落？": {
+  "intent": "qa",
+  "standalone_question": "在 DPR 论文中，使用 FAISS 内存索引时，系统每秒能处理多少个问题并返回每个问题的前 100 个段落？",
+  "english_query": "In the DPR paper, when using FAISS in-memory index, how many questions per second can the system process and return top 100 passages for each question?",
+  "paper_mentions": [
+   "DPR"
+  ],
+  "search_keywords": [
+   "DPR",
+   "FAISS",
+   "dense retrieval",
+   "in-memory index"
+  ]
+ },
+ "q25:In the generative agent architecture, what time increment is used when a plan is recursively decomposed into its finest-grained actions?": {
+  "intent": "qa",
+  "standalone_question": "In the generative agent architecture, what time increment is used when a plan is recursively decomposed into its finest-grained actions?",
+  "english_query": "In the generative agent architecture, what time increment is used when a plan is recursively decomposed into its finest-grained actions?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "generative agent",
+   "plan decomposition",
+   "time increment"
+  ]
+ },
+ "q26:In the AutoGen system for ALFWorld, what is the role of the grounding agent?": {
+  "intent": "qa",
+  "standalone_question": "In the AutoGen system for ALFWorld, what is the role of the grounding agent?",
+  "english_query": "In the AutoGen system for ALFWorld, what is the role of the grounding agent?",
+  "paper_mentions": [
+   "AutoGen"
+  ],
+  "search_keywords": [
+   "AutoGen",
+   "ALFWorld",
+   "grounding agent"
+  ]
+ },
+ "q27:Toolformer 论文的语言建模实验里，C* 这个数据集指的是什么？": {
+  "intent": "qa",
+  "standalone_question": "Toolformer 论文的语言建模实验里，C* 这个数据集指的是什么？",
+  "english_query": "In the language modeling experiments of the Toolformer paper, what does the dataset C* refer to?",
+  "paper_mentions": [
+   "Toolformer"
+  ],
+  "search_keywords": [
+   "Toolformer",
+   "language modeling",
+   "dataset"
+  ]
+ },
+ "q28:In Speculative RAG, what is the role of the symbol δ (delta)?": {
+  "intent": "qa",
+  "standalone_question": "In Speculative RAG, what is the role of the symbol δ (delta)?",
+  "english_query": "In Speculative RAG, what is the role of the symbol δ (delta)?",
+  "paper_mentions": [
+   "Speculative RAG"
+  ],
+  "search_keywords": [
+   "Speculative RAG",
+   "delta",
+   "symbol"
+  ]
+ },
+ "q29:在 Chain-of-Thought Prompting 论文中，用于常识推理评估的 BIG-bench 任务之一 “Date Understanding” 的具体推理目标是什么？": {
+  "intent": "qa",
+  "standalone_question": "在 Chain-of-Thought Prompting 论文中，用于常识推理评估的 BIG-bench 任务之一 “Date Understanding” 的具体推理目标是什么？",
+  "english_query": "In the Chain-of-Thought Prompting paper, what is the specific reasoning objective of the BIG-bench task \"Date Understanding\" used for commonsense reasoning evaluation?",
+  "paper_mentions": [
+   "Chain-of-Thought Prompting"
+  ],
+  "search_keywords": [
+   "Chain-of-Thought Prompting",
+   "BIG-bench",
+   "Date Understanding",
+   "commonsense reasoning"
+  ]
+ },
+ "q30:What does the acronym ICT stand for in the context of REALM's warm-start training objective?": {
+  "intent": "qa",
+  "standalone_question": "What does the acronym ICT stand for in the context of REALM's warm-start training objective?",
+  "english_query": "What does the acronym ICT stand for in the context of REALM's warm-start training objective?",
+  "paper_mentions": [
+   "REALM"
+  ],
+  "search_keywords": [
+   "REALM",
+   "ICT",
+   "warm-start training"
+  ]
+ },
+ "q31:Reflexion 论文的代码生成实验里用到的 MultiPL-E 是什么？": {
+  "intent": "qa",
+  "standalone_question": "Reflexion 论文的代码生成实验里用到的 MultiPL-E 是什么？",
+  "english_query": "What is MultiPL-E used in the code generation experiments of the Reflexion paper?",
+  "paper_mentions": [
+   "Reflexion"
+  ],
+  "search_keywords": [
+   "MultiPL-E",
+   "code generation",
+   "Reflexion"
+  ]
+ },
+ "q32:In ColBERT, what is the purpose of passing BERT's contextualized token representations through a linear layer with no activations?": {
+  "intent": "qa",
+  "standalone_question": "In ColBERT, what is the purpose of passing BERT's contextualized token representations through a linear layer with no activations?",
+  "english_query": "In ColBERT, what is the purpose of passing BERT's contextualized token representations through a linear layer with no activations?",
+  "paper_mentions": [
+   "ColBERT"
+  ],
+  "search_keywords": [
+   "ColBERT",
+   "contextualized token representations",
+   "linear layer"
+  ]
+ },
+ "q33:在《Attention Is All You Need》中，Multi-Head Attention 里的术语 head 指什么？": {
+  "intent": "qa",
+  "standalone_question": "在《Attention Is All You Need》中，Multi-Head Attention 里的术语 head 指什么？",
+  "english_query": "In 'Attention Is All You Need', what does the term 'head' refer to in Multi-Head Attention?",
+  "paper_mentions": [
+   "Attention Is All You Need"
+  ],
+  "search_keywords": [
+   "multi-head attention",
+   "attention head",
+   "transformer"
+  ]
+ },
+ "q34:In the RAG-Token model, what does the term 'marginalize' refer to in the generation process?": {
+  "intent": "qa",
+  "standalone_question": "In the RAG-Token model, what does the term 'marginalize' refer to in the generation process?",
+  "english_query": "In the RAG-Token model, what does the term 'marginalize' refer to in the generation process?",
+  "paper_mentions": [
+   "RAG-Token"
+  ],
+  "search_keywords": [
+   "RAG-Token",
+   "marginalization",
+   "generation process"
+  ]
+ },
+ "q35:在 RePlug 的输入重构方法中，符号 $\\circ$ 代表什么操作？": {
+  "intent": "qa",
+  "standalone_question": "在 RePlug 的输入重构方法中，符号 ∘ 代表什么操作？",
+  "english_query": "In RePlug's input reconstruction method, what operation does the symbol ∘ represent?",
+  "paper_mentions": [
+   "RePlug"
+  ],
+  "search_keywords": [
+   "RePlug",
+   "input reconstruction",
+   "symbol operation"
+  ]
+ },
+ "q36:在那篇让模型学会按需检索、生成并用反思标记自我批判的论文里，分析训练数据规模时，作者从原始训练集中随机抽取了哪几种规模的子集来微调？": {
+  "intent": "qa",
+  "standalone_question": "在 Self-RAG 论文中，分析训练数据规模时，作者从原始训练集中随机抽取了哪几种规模的子集来微调？",
+  "english_query": "In the Self-RAG paper, when analyzing training data size, what sizes of subsets were randomly sampled from the original training set for fine-tuning?",
+  "paper_mentions": [
+   "Self-RAG"
+  ],
+  "search_keywords": [
+   "Self-RAG",
+   "training data size",
+   "fine-tuning",
+   "subset sampling"
+  ]
+ },
+ "q37:在解码器端融合多段证据的开放域问答方法中，编码器逐段独立处理、解码器联合处理所有段落，这样设计在计算量上有什么好处？": {
+  "intent": "qa",
+  "standalone_question": "在解码器端融合多段证据的开放域问答方法中，编码器逐段独立处理、解码器联合处理所有段落，这样设计在计算量上有什么好处？",
+  "english_query": "In open-domain question answering methods that fuse multiple pieces of evidence at the decoder side, what are the computational advantages of having the encoder process each passage independently while the decoder jointly processes all passages?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "open-domain question answering",
+   "multi-passage fusion",
+   "decoder-side fusion",
+   "computational efficiency"
+  ]
+ },
+ "q38:在我的世界游戏里做终身学习的“航行者”智能体中，一段程序通过自我验证并存入技能库之后，系统接下来做什么来确定下一个目标？": {
+  "intent": "qa",
+  "standalone_question": "在《我的世界》游戏里做终身学习的“航行者”智能体中，一段程序通过自我验证并存入技能库之后，系统接下来做什么来确定下一个目标？",
+  "english_query": "In the Voyager lifelong learning agent in Minecraft, after a program passes self-verification and is stored in the skill library, what does the system do next to determine the next goal?",
+  "paper_mentions": [
+   "Voyager"
+  ],
+  "search_keywords": [
+   "Voyager",
+   "Minecraft",
+   "lifelong learning",
+   "skill library"
+  ]
+ },
+ "q39:在研究众包能否用于检索增强生成评估的论文里，作者用什么方法估计标注者能力并生成校正后的标准标签？": {
+  "intent": "qa",
+  "standalone_question": "在研究众包能否用于检索增强生成评估的论文里，作者用什么方法估计标注者能力并生成校正后的标准标签？",
+  "english_query": "How do the authors estimate annotator ability and generate corrected ground-truth labels in the paper studying whether crowdsourcing can be used for retrieval-augmented generation evaluation?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "crowdsourcing",
+   "retrieval-augmented generation",
+   "evaluation",
+   "annotator ability"
+  ]
+ },
+ "q40:训练阿特拉斯检索增强模型时，维基百科被切成了多少段？每段平均多少个词？": {
+  "intent": "qa",
+  "standalone_question": "训练阿特拉斯检索增强模型时，维基百科被切成了多少段？每段平均多少个词？",
+  "english_query": "Atlas retrieval-augmented model training Wikipedia passages average words per passage",
+  "paper_mentions": [
+   "Atlas"
+  ],
+  "search_keywords": [
+   "Atlas retrieval-augmented model",
+   "Wikipedia passages",
+   "average words per passage"
+  ]
+ },
+ "q41:LoRA 微调时低秩矩阵的秩 r 一般取多少，对效果有什么影响？": {
+  "intent": "qa",
+  "standalone_question": "LoRA 微调时低秩矩阵的秩 r 一般取多少，对效果有什么影响？",
+  "english_query": "What values of the rank r of the low-rank matrices are typically used in LoRA fine-tuning, and how does it affect performance?",
+  "paper_mentions": [
+   "LoRA"
+  ],
+  "search_keywords": [
+   "LoRA",
+   "low-rank adaptation",
+   "rank",
+   "fine-tuning"
+  ]
+ },
+ "q42:How does Mamba's selective state space mechanism scale with sequence length?": {
+  "intent": "qa",
+  "standalone_question": "How does Mamba's selective state space mechanism scale with sequence length?",
+  "english_query": "How does Mamba's selective state space mechanism scale with sequence length?",
+  "paper_mentions": [
+   "Mamba"
+  ],
+  "search_keywords": [
+   "Mamba",
+   "selective state space",
+   "sequence length scaling"
+  ]
+ },
+ "q43:DPO 直接偏好优化相比 PPO 的 RLHF 少了哪个模型？": {
+  "intent": "qa",
+  "standalone_question": "DPO（直接偏好优化）相比 PPO 的 RLHF 少了哪个模型？",
+  "english_query": "Does Direct Preference Optimization (DPO) eliminate the reward model compared to PPO-based RLHF?",
+  "paper_mentions": [],
+  "search_keywords": [
+   "Direct Preference Optimization",
+   "RLHF",
+   "reward model",
+   "PPO"
+  ]
+ },
+ "q44:What quantization scheme does GPTQ use to compress LLM weights to 4 bits?": {
+  "intent": "qa",
+  "standalone_question": "What quantization scheme does GPTQ use to compress LLM weights to 4 bits?",
+  "english_query": "What quantization scheme does GPTQ use to compress LLM weights to 4 bits?",
+  "paper_mentions": [
+   "GPTQ"
+  ],
+  "search_keywords": [
+   "GPTQ",
+   "quantization",
+   "4-bit",
+   "LLM weights"
+  ]
+ },
+ "q45:Mixtral 8x7B 的路由器每个 token 激活几个专家？": {
+  "intent": "qa",
+  "standalone_question": "Mixtral 8x7B 的路由器每个 token 激活几个专家？",
+  "english_query": "How many experts does the router activate per token in Mixtral 8x7B?",
+  "paper_mentions": [
+   "Mixtral 8x7B"
+  ],
+  "search_keywords": [
+   "Mixtral 8x7B",
+   "mixture of experts",
+   "router",
+   "sparse activation"
+  ]
+ },
+ "q46:Which tokenizer vocabulary size does Llama 3 use?": {
+  "intent": "qa",
+  "standalone_question": "Which tokenizer vocabulary size does Llama 3 use?",
+  "english_query": "Which tokenizer vocabulary size does Llama 3 use?",
+  "paper_mentions": [
+   "Llama 3"
+  ],
+  "search_keywords": [
+   "Llama 3",
+   "tokenizer",
+   "vocabulary size"
+  ]
+ },
+ "q47:FlashAttention 是如何通过分块减少显存读写的？": {
+  "intent": "qa",
+  "standalone_question": "FlashAttention 是如何通过分块减少显存读写的？",
+  "english_query": "How does FlashAttention reduce memory reads and writes through tiling?",
+  "paper_mentions": [
+   "FlashAttention"
+  ],
+  "search_keywords": [
+   "FlashAttention",
+   "tiling",
+   "memory I/O",
+   "attention"
+  ]
+ },
+ "q48:How does vLLM's PagedAttention manage the KV cache in fixed-size blocks?": {
+  "intent": "qa",
+  "standalone_question": "How does vLLM's PagedAttention manage the KV cache in fixed-size blocks?",
+  "english_query": "How does vLLM's PagedAttention manage the KV cache in fixed-size blocks?",
+  "paper_mentions": [
+   "vLLM"
+  ],
+  "search_keywords": [
+   "vLLM",
+   "PagedAttention",
+   "KV cache",
+   "fixed-size blocks"
+  ]
+ },
+ "q49:Stable Diffusion 的 VAE 把图像压缩到多少倍的潜空间？": {
+  "intent": "qa",
+  "standalone_question": "Stable Diffusion 的 VAE 把图像压缩到多少倍的潜空间？",
+  "english_query": "How many times does the VAE in Stable Diffusion compress images into the latent space?",
+  "paper_mentions": [
+   "Stable Diffusion"
+  ],
+  "search_keywords": [
+   "Stable Diffusion",
+   "VAE",
+   "latent space",
+   "compression factor"
+  ]
+ },
+ "q50:Constitutional AI 里用于 AI 反馈的宪法原则是怎么制定的？": {
+  "intent": "qa",
+  "standalone_question": "Constitutional AI 里用于 AI 反馈的宪法原则是怎么制定的？",
+  "english_query": "How are the constitutional principles used for AI feedback in Constitutional AI formulated?",
+  "paper_mentions": [
+   "Constitutional AI"
+  ],
+  "search_keywords": [
+   "Constitutional AI",
+   "constitutional principles",
+   "AI feedback",
+   "RLHF"
+  ]
+ }
+}

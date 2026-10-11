@@ -2,7 +2,7 @@
 
 论文检索与分析 Agent：arXiv 论文知识库 + 混合检索 RAG + LangGraph 编排。
 
-> 当前进度：**M0–M6 已完成**（解析入库、混合检索、带引用问答、多轮对话 Agent、解读卡片与多篇对比、FastAPI + Streamlit）。
+> 当前进度：**M0–M6 与评估已完成**（解析入库、混合检索、带引用问答、多轮对话 Agent、解读卡片与多篇对比、FastAPI + Streamlit、A0–A4 检索消融）。
 > 项目功能、架构和使用案例见 [docs/PaperLens_项目讲解.md](docs/PaperLens_项目讲解.md)。
 
 ## 环境要求
@@ -69,6 +69,26 @@ uv run paperlens ui       # 界面：http://127.0.0.1:8501
 | `API_HOST` / `API_PORT` | 127.0.0.1 / 8000 | API 监听地址 |
 | `API_KEY` | 空 | 设置后所有接口需带 `X-API-Key` 头；对外暴露服务时务必设置 |
 
+## 评估
+
+30 篇论文、50 题测试集（单篇事实 25、术语 10、跨语言 5、无法回答 10），完整报告见 [eval/reports/report.md](eval/reports/report.md)。
+
+| 配置 | Hit@5 | Recall@5 | MRR@10 |
+|---|---|---|---|
+| A0 仅稠密，无上下文标题 | 87.5% | 65.0% | 0.749 |
+| A1 + 上下文标题 | 90.0% | 69.0% | 0.817 |
+| A2 + BM25（英文检索句）+ RRF | 90.0% | 71.8% | 0.874 |
+| A3 + 重排（完整检索） | 100.0% | 84.0% | 0.967 |
+| A4 = A3，BM25 用原问题 | 97.5% | 80.2% | 0.958 |
+
+端到端问答：正确率 95.0%，拒答准确率 92.0%，引用编号合法率 100%，延迟 p50 2.8 秒，单题约 $0.0004。
+
+```bash
+uv run paperlens ingest -f eval/corpus.txt   # 评估语料（30 篇）
+uv run paperlens eval                         # 检索消融，几乎不花钱（LLM 只用于查询分析和池化标注，有缓存）
+uv run paperlens eval --answers               # 加上端到端问答，约 ¥0.3
+```
+
 ## 开发
 
 ```bash
@@ -87,9 +107,13 @@ src/paperlens/
 ├── rag/           # query、retriever、answer（带引用生成）、card（解读卡片）、compare（多篇对比）
 ├── agent/         # state.py、graph.py（LangGraph 状态图）
 ├── api/           # app.py（FastAPI + SSE）、client.py（HTTP 客户端）
+├── eval/          # dataset、metrics（Hit / Recall / MRR）、runner（消融 + 池化标注 + 端到端）、report
 └── ui/app.py      # Streamlit 界面
 docs/                  # 项目讲解、简历介绍、架构图与界面截图
 eval/seed_papers.txt   # 种子论文清单
+eval/corpus.txt        # 评估语料（30 篇）
+eval/qa.jsonl          # 测试集；build_qa.py 生成候选题，review_edits.py 是人工审核记录
+eval/reports/          # 评估报告与原始结果
 ```
 
 ## 已知限制
@@ -99,6 +123,4 @@ eval/seed_papers.txt   # 种子论文清单
 - PDF 回退只能定位到页码，引用链接跳到 PDF 对应页。
 - 查询分析失败时按普通问题处理，BM25 通道退回用原问题。
 
----
 
-由 ClawsGO Science Agent 协助开发。

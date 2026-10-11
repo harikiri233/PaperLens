@@ -1,0 +1,31 @@
+# 评测语料：30 篇 RAG / Agent 方向论文（种子 15 篇 + 使用中补充的 3 篇 + 评测新增 12 篇）
+2005.11401  # RAG (Lewis et al.)
+2310.11511  # Self-RAG
+2401.15884  # CRAG
+2404.16130  # GraphRAG
+2212.10496  # HyDE
+2309.15217  # RAGAS
+2312.10997  # RAG Survey
+2210.03629  # ReAct
+2303.11366  # Reflexion
+2302.04761  # Toolformer
+2305.14283  # Query Rewriting
+2307.03172  # Lost in the Middle
+2004.04906  # DPR
+2402.03216  # BGE M3-Embedding
+1706.03762  # Attention Is All You Need
+2305.06983  # FLARE: Active Retrieval Augmented Generation
+2504.15689  # The Viability of Crowdsourcing for RAG Evaluation
+2407.08223  # Speculative RAG
+2112.04426  # RETRO
+2002.08909  # REALM
+2007.01282  # FiD: Leveraging Passage Retrieval with Generative Models
+2208.03299  # Atlas
+2301.12652  # REPLUG
+2112.09118  # Contriever
+2004.12832  # ColBERT
+2201.11903  # Chain-of-Thought Prompting
+2305.10601  # Tree of Thoughts
+2304.03442  # Generative Agents
+2308.08155  # AutoGen
+2305.16291  # Voyager
